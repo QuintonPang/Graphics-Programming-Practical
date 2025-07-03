@@ -1,4 +1,5 @@
 
+/*
 #include <Windows.h>
 #include <gl/GL.h>
 
@@ -196,3 +197,5 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 	return true;
 }
 //--------------------------------------------------------------------
+
+*/

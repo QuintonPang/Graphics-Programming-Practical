@@ -1,4 +1,4 @@
-/*
+
 #include <Windows.h>
 #include <gl/GL.h>
 
@@ -57,19 +57,78 @@ bool initPixelFormat(HDC hdc)
 		return false;
 	}
 }
-//--------------------------------------------------------------------
 
+#include <cmath>
+//--------------------------------------------------------------------
+float angle = 0.0f;
+void drawPyramid()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(0.0f, -1.0f, -6.0f); // move back and slightly down to see the pyramid
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glFrustum(-1, 1, -1, 1, 2, 10); // basic perspective
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glColor3f(1, 0, 0);
+	glBegin(GL_LINE_LOOP); // base
+	glVertex3f(-1, 0, -1);
+	glVertex3f(1, 0, -1);
+	glVertex3f(1, 0, 1);
+	glVertex3f(-1, 0, 1);
+	glEnd();
+
+	glBegin(GL_LINES); // sides
+	glVertex3f(0, 2, 0); glVertex3f(-1, 0, -1); // E-A
+	glVertex3f(0, 2, 0); glVertex3f(1, 0, -1);  // E-B
+	glVertex3f(0, 2, 0); glVertex3f(1, 0, 1);   // E-C
+	glVertex3f(0, 2, 0); glVertex3f(-1, 0, 1);  // E-D
+	glEnd();
+}
+
+void test() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(1, 1, 1, 1); // white background
+
+	// --- PROJECTION ---
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	float near1 = 1.0f, far1 = 10.0f;
+	float aspect = 800.0f / 600.0f;
+	float top = tanf(60.0f * 3.14159f / 360.0f) * near1;
+	float bottom = -top;
+	float right = top * aspect;
+	float left = -right;
+	glFrustum(left, right, bottom, top, near1, far1);
+
+	// --- MODELVIEW ---
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(0.0f, 0.0f, -5.0f); // move camera backward
+
+	glRotatef(angle, 1.0f, 1.0f, 0.0f); // rotate quad in 3D space
+	angle += 1.0f; // animate
+
+	// --- DRAW ---
+	glColor3f(1, 0, 0); // red
+	glBegin(GL_QUADS);
+	glVertex3f(-1.0f, -1.0f, 0.0f);
+	glVertex3f(1.0f, -1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(-1.0f, 1.0f, 0.0f);
+	glEnd();
+
+	glFlush();
+}
 void display()
 {
-	//--------------------------------
-	//	OpenGL drawing
-	//--------------------------------
 
-	//--------------------------------
-	//	End of OpenGL drawing
-	//--------------------------------
+	drawPyramid();
+	
 }
-//--------------------------------------------------------------------
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 {
@@ -112,6 +171,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 	MSG msg;
 	ZeroMemory(&msg, sizeof(msg));
 
+	glEnable(GL_DEPTH_TEST);
+
 	while (true)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -125,6 +186,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 		display();
 
 		SwapBuffers(hdc);
+		Sleep(16); // ~60 FPS
+
 	}
 
 	UnregisterClass(WINDOW_TITLE, wc.hInstance);
@@ -133,4 +196,3 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 }
 //--------------------------------------------------------------------
 
-*/
